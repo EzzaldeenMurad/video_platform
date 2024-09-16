@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\ConvertVideoStreaming;
+use App\Models\Convertedvideo;
 use App\Models\Video;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -17,14 +18,16 @@ class VideoController extends Controller
     {
         $this->video = $video;
 
-        // $this->middleware('auth')->except(['show', 'addView']);
+        $this->middleware('auth');
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $videos = auth()->user()->videos->sortByDesc('created_at');
+        $title = 'آخر الفيديوهات المرفوعة';
+        return view('videos.my-videos', compact('videos', 'title'));
     }
 
     /**
@@ -73,7 +76,7 @@ class VideoController extends Controller
      */
     public function show(Video $video)
     {
-        //
+        return view('videos.show', compact('video'));
     }
 
     /**
@@ -81,15 +84,41 @@ class VideoController extends Controller
      */
     public function edit(Video $video)
     {
-        //
+        return view('videos.edit', compact('video'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Video $video)
+    public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'title' => 'required',
+        ]);
+
+        $video = Video::where('id', $id)->first();
+
+        if ($request->has('image')) {
+
+            $randomPath = Str::random(16);
+            $newPath =  $randomPath . '.' . $request->image->getClientOriginalExtension();
+
+            Storage::delete($video->image_path);
+
+            $image = Image::make($request->image)->resize(320, 180);
+            $path = Storage::put($newPath, $image->stream());
+
+            $video->image_path = $newPath;
+        }
+
+        $video->title = $request->title;
+
+        $video->save();
+
+        return redirect('/videos')->with(
+            'success',
+            'تم تعديل معلومات الفيديو بنجاح'
+        );
     }
 
     /**
@@ -97,6 +126,29 @@ class VideoController extends Controller
      */
     public function destroy(Video $video)
     {
-        //
+        $convertedVideo = Convertedvideo::where('video_id', $video->id)->first();
+        // dd($convertedVideo);
+        Storage::delete([
+            $convertedVideo->mp4_Format_240,
+            $convertedVideo->mp4_Format_360,
+            $convertedVideo->mp4_Format_480,
+            $convertedVideo->mp4_Format_720,
+            $convertedVideo->mp4_Format_1080,
+            $convertedVideo->webm_Format_240,
+            $convertedVideo->webm_Format_360,
+            $convertedVideo->webm_Format_480,
+            $convertedVideo->webm_Format_720,
+            $convertedVideo->webm_Format_1080,
+            $video->image_path
+        ]);
+        $video->delete();
+        return back()->with('success', 'تم حذف مقطع الفيديو بنجاح');
+    }
+
+    public function search(Request $request)
+    {
+        $videos = $this->video->where('title', 'LIKE', "%{$request->search}%")->paginate(12);
+        $title = ' عرض نتائج البحث عن: ' . $request->search;
+        return view('videos.my-videos', compact('videos', 'title'));
     }
 }

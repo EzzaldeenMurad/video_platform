@@ -62,7 +62,7 @@
                         </li>
 
                         <li class="nav-item {{ request()->is('videos') ? 'active' : '' }}">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="{{ route('videos.index') }}">
                                 <i class="far fa-play-circle"></i>
                                 فيديوهاتي
                             </a>
@@ -144,8 +144,8 @@
                                         </x-responsive-nav-link>
 
                                         @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
-                                            <x-responsive-nav-link href="{{ route('api-tokens.index') }}"
-                                                :active="request()->routeIs('api-tokens.index')" class="dropdown-item ">
+                                            <x-responsive-nav-link href="{{ route('api-tokens.index') }}" :active="request()->routeIs('api-tokens.index')"
+                                                class="dropdown-item ">
                                                 {{ __('site.api_token') }}
                                             </x-responsive-nav-link>
                                         @endif
@@ -170,7 +170,7 @@
                                             </div>
 
                                             <!-- Team Settings -->
-                                            <x-responsive-nav-link>
+                                            <x-responsive-nav-link
                                                 href="{{ route('teams.show', Auth::user()->currentTeam->id) }}"
                                                 :active="request()->routeIs('teams.show')" class="dropdown-item">
                                                 {{ __('site.team_settings') }}
@@ -191,8 +191,7 @@
                                             </div>
 
                                             @foreach (Auth::user()->allTeams() as $team)
-                                                <x-switchable-team :team="$team"
-                                                    component="responsive-nav-link" />
+                                                <x-switchable-team :team="$team" component="responsive-nav-link" />
                                             @endforeach
                                         @endif
                                     </div>
