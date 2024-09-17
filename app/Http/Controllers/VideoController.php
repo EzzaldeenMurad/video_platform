@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Jobs\ConvertVideoStreaming;
 use App\Models\Convertedvideo;
+use App\Models\Like;
 use App\Models\Video;
+use App\Models\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -18,7 +21,7 @@ class VideoController extends Controller
     {
         $this->video = $video;
 
-        $this->middleware('auth');
+        $this->middleware('auth')->except('show', 'addView', 'search');
     }
     /**
      * Display a listing of the resource.
@@ -64,6 +67,12 @@ class VideoController extends Controller
             'user_id'     => auth()->id(),
         ]);
 
+        $view = View::create([
+            'video_id' => $video->id,
+            'user_id' => auth()->id(),
+            'views_number' => 0
+        ]);
+
         ConvertVideoStreaming::dispatch($video);
         return redirect()->back()->with(
             'success',
@@ -76,7 +85,16 @@ class VideoController extends Controller
      */
     public function show(Video $video)
     {
-        return view('videos.show', compact('video'));
+
+        $countLike = Like::where(['video_id' => $video->id, 'like' => '1'])->count();
+        $countDislike = Like::where(['video_id' => $video->id, 'like' => '0'])->count();
+        $user = Auth::user();
+        if ($user) {
+            $userLike = $user->likes()->where('video_id', $video->id)->first();
+        } else {
+            $userLike = 0;
+        }
+        return view('videos.show', compact('video', 'countLike', 'countDislike', 'userLike'));
     }
 
     /**
@@ -150,5 +168,15 @@ class VideoController extends Controller
         $videos = $this->video->where('title', 'LIKE', "%{$request->search}%")->paginate(12);
         $title = ' عرض نتائج البحث عن: ' . $request->search;
         return view('videos.my-videos', compact('videos', 'title'));
+    }
+
+    public function addView(Request $request)
+    {
+        $views = View::where('video_id', $request->videoId)->first();
+
+        $views->views_number++;
+
+        $views->save();
+        return response()->json(['viewsNumbers' =>  $views->views_number]);
     }
 }

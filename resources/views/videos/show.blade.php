@@ -56,39 +56,43 @@
                     </h5>
                 </div>
 
-                {{-- <div class="interaction text-center mt-5">
-                <a href="#" class="like ml-3">
-                    @if ($userLike)
-                        @if ($userLike->like == 1)
-                        <i class="far fa-thumbs-up fa-2x liked"></i> <span id="likeNumber">{{$countLike}}</span>
+                <div class="interaction text-center mt-5">
+                    <a href="#" class="like ml-3">
+                        @if ($userLike)
+                            @if ($userLike->like == 1)
+                                <i class="far fa-thumbs-up fa-2x liked"></i> <span
+                                    id="likeNumber">{{ $countLike }}</span>
+                            @else
+                                <i class="far fa-thumbs-up fa-2x"></i> <span id="likeNumber">{{ $countLike }}</span>
+                            @endif
                         @else
-                            <i class="far fa-thumbs-up fa-2x"></i> <span id="likeNumber">{{$countLike}}</span>
+                            <i class="far fa-thumbs-up fa-2x"></i> <span id="likeNumber">{{ $countLike }}</span>
                         @endif
-                    @else
-                        <i class="far fa-thumbs-up fa-2x"></i> <span id="likeNumber">{{$countLike}}</span>
-                    @endif
-                    
-                </a> | 
-                <a href="#" class="like mr-3">
-                    @if ($userLike)
-                        @if ($userLike->like == 0)
-                            <i id="like_down" class="far fa-thumbs-down fa-2x liked"></i> <span id="dislikeNumber">{{$countDislike}}</span>
-                        @else
-                            <i id="like_down" class="far fa-thumbs-down fa-2x"></i> <span id="dislikeNumber">{{$countDislike}}</span>
-                        @endif
-                    @else
-                        <i id="like_down" class="far fa-thumbs-down fa-2x"></i> <span id="dislikeNumber">{{$countDislike}}</span>
-                    @endif
-                </a>
 
-                @foreach ($video->views as $view)
+                    </a> |
+                    <a href="#" class="like mr-3">
+                        @if ($userLike)
+                            @if ($userLike->like == 0)
+                                <i id="like_down" class="far fa-thumbs-down fa-2x liked"></i> <span
+                                    id="dislikeNumber">{{ $countDislike }}</span>
+                            @else
+                                <i id="like_down" class="far fa-thumbs-down fa-2x"></i> <span
+                                    id="dislikeNumber">{{ $countDislike }}</span>
+                            @endif
+                        @else
+                            <i id="like_down" class="far fa-thumbs-down fa-2x"></i> <span
+                                id="dislikeNumber">{{ $countDislike }}</span>
+                        @endif
+                    </a>
+                    
+                    @foreach ($video->views as $view)
                     <span class="float-right">عدد المشاهدات <span class="viewsNumber">{{$view->views_number}}</span></span>
                 @endforeach
 
-                <div class="loginAlert mt-5">
-                    
+                    <div class="loginAlert mt-5">
+
+                    </div>
                 </div>
-            </div> --}}
 
                 {{-- <div class="mt-4 px-2">
                 <div class="comments">
@@ -98,9 +102,9 @@
                     <div>
                         <textarea class="form-control" id="comment" name="comment" rows="4" placeholder="إضافة تعليق عام"></textarea>
                         <button type="submit" class="btn btn-info mt-3 saveComment">تعليق</button>
-                        
+
                         <div class="commentAlert mt-5">
-                    
+
                         </div>
 
                         <div class="commentBody">
@@ -126,10 +130,10 @@
                                                                 @method('PATCH')
                                                                 <button type="submit" class="float-left"><i class="far fa-edit text-success fa-lg ml-3"></i></button>
                                                             </form>
-                                                        @endif   
+                                                        @endif
                                                     @endif
                                                 @endif
-                                                <p class="mt-3 mb-2"><strong>{{$comment->user->name}}</strong></p> 
+                                                <p class="mt-3 mb-2"><strong>{{$comment->user->name}}</strong></p>
                                                 <i class="far fa-clock"></i> <span class="comment_date text-secondary">{{$comment->created_at->diffForHumans()}}</span>
                                                 <p class="mt-3" >{{$comment->body}}</p>
                                             </div>
@@ -191,7 +195,7 @@
         }
     </script>
 
-    {{-- <script>
+    <script>
     $('.like').on('click', function(event) {
         var token = '{{ Session::token() }}';
         var urlLike = '{{ route('like') }}';
@@ -209,27 +213,27 @@
                         </ul>\
                     </div>';
             $(".loginAlert").html(html);
-        } 
-        else if (blocked == '1') {
-            event.preventDefault();
-            var html='<div class="alert alert-danger">\
-                        <ul>\
-                            <li class="loginAlert">أنت ممنوع من الإعجاب</li>\
-                        </ul>\
-                    </div>';
-            $(".loginAlert").html(html);
-           
         }
+        // else if (blocked == '1') {
+        //     event.preventDefault();
+        //     var html='<div class="alert alert-danger">\
+        //                 <ul>\
+        //                     <li class="loginAlert">أنت ممنوع من الإعجاب</li>\
+        //                 </ul>\
+        //             </div>';
+        //     $(".loginAlert").html(html);
+
+        // }
         else {
             event.preventDefault();
-            videoId = $("#videoId").val(); 
+            videoId = $("#videoId").val();
             var isLike = event.target.parentNode.previousElementSibling == null;
             $.ajax({
                 method: 'POST',
                 url: urlLike,
                 data: {
-                    isLike: isLike, 
-                    videoId: videoId, 
+                    isLike: isLike,
+                    videoId: videoId,
                     _token: token
                 },
                 success : function(data) {
@@ -244,49 +248,49 @@
                         $('#likeNumber').html(data.countLike);
                         $('#dislikeNumber').html(data.countDislike);
                     }
-                    
+
                     if ($(event.target).hasClass('fa-thumbs-down')) {
                         if($(event.target).hasClass('liked')) {
                             $(event.target).removeClass("liked");
                         }
                         else {
                             $(event.target).addClass("liked");
-                        }  
+                        }
                         $('#likeNumber').html(data.countLike);
                         $('#dislikeNumber').html(data.countDislike);
                     }
                     if (isLike) {
-                        $(".fa-thumbs-down").removeClass("liked");   
+                        $(".fa-thumbs-down").removeClass("liked");
                     } else {
                         $(".fa-thumbs-up").removeClass("liked");
                     }
 
                 }
-            }) 
-        }       
+            })
+        }
     });
-</script> --}}
+</script>
 
-    {{-- <script>
+    <script>
 	$('#videoPlayer').on('ended', function(e) {
 		var token = '{{ Session::token() }}';
         var urlComment = '{{ route('view') }}';
         event.preventDefault();
         videoId = $("#videoId").val();
-        
+
         $.ajax({
                 method: 'POST',
                 url: urlComment,
                 data: {
-                    videoId: videoId, 
+                    videoId: videoId,
                     _token: token
                 },
                 success : function(data) {
                     $(".viewsNumber").html(data.viewsNumbers);
                 }
-        }) 
+        })
 	});
-</script> --}}
+</script>
 
     {{-- <script>
     $('.saveComment').on('click', function(event) {
@@ -314,7 +318,7 @@
                         </ul>\
                     </div>';
             $(".commentAlert ").html(html);
-           
+
         }
         else if ($('#comment').val().length == 0) {
             var html='<div class="alert alert-danger">\
@@ -322,7 +326,7 @@
                         <li>الرجاء كتابة تعليق</li>\
                     </ul>\
                 </div>';
-            $(".commentAlert ").html(html);  
+            $(".commentAlert ").html(html);
         }
         else {
             $(".commentAlert ").html('');
@@ -334,11 +338,11 @@
                 method: 'POST',
                 url: urlComment,
                 data: {
-                    comment: comment, 
-                    videoId: videoId, 
+                    comment: comment,
+                    videoId: videoId,
                     _token: token
                 },
-                success : function(data) { 
+                success : function(data) {
                     $("#comment").val('');
 
                     destroyUrl = "{{route('comment.destroy', 'des_id')}}";
@@ -373,11 +377,11 @@
                                 </div>';
 
                     $(".commentBody").prepend(html);
-                    
-                      
+
+
                 }
-            })  
-        }      
+            })
+        }
     });
 </script> --}}
 @endSection
