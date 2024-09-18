@@ -84,39 +84,41 @@
                                 id="dislikeNumber">{{ $countDislike }}</span>
                         @endif
                     </a>
-                    
+
                     @foreach ($video->views as $view)
-                    <span class="float-right">عدد المشاهدات <span class="viewsNumber">{{$view->views_number}}</span></span>
-                @endforeach
+                        <span class="float-right">عدد المشاهدات <span
+                                class="viewsNumber">{{ $view->views_number }}</span></span>
+                    @endforeach
 
                     <div class="loginAlert mt-5">
 
                     </div>
                 </div>
 
-                {{-- <div class="mt-4 px-2">
-                <div class="comments">
-                    <div class="mb-3">
-                        <span>التعليقات</span>
-                    </div>
-                    <div>
-                        <textarea class="form-control" id="comment" name="comment" rows="4" placeholder="إضافة تعليق عام"></textarea>
-                        <button type="submit" class="btn btn-info mt-3 saveComment">تعليق</button>
-
-                        <div class="commentAlert mt-5">
-
+                <div class="mt-4 px-2">
+                    <div class="comments">
+                        <div class="mb-3">
+                            <span>التعليقات</span>
                         </div>
+                        <div>
+                            <textarea class="form-control" id="comment" name="comment" rows="4" placeholder="إضافة تعليق عام"></textarea>
+                            <button type="submit" class="btn btn-info mt-3 saveComment">تعليق</button>
 
-                        <div class="commentBody">
-                            @foreach ($comments as $comment)
-                                <div class="card mt-5 mb-3">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-2">
-                                                <img src="{{$comment->user->profile_photo_url}}" width="150px" class="rounded-full"/>
-                                            </div>
-                                            <div class="col-10">
-                                                @if (Auth::check())
+                            <div class="commentAlert mt-5">
+
+                            </div>
+
+                            <div class="commentBody">
+                                @foreach ($comments as $comment)
+                                    <div class="card mt-5 mb-3">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-2">
+                                                    <img src="{{ $comment->user->profile_photo_url }}" width="150px"
+                                                        class="rounded-full" />
+                                                </div>
+                                                <div class="col-10">
+                                                    @if (Auth::check())
                                                     @if ($comment->user_id == auth()->user()->id || auth()->user()->administration_level > 0)
                                                         @if (!auth()->user()->block)
                                                             <form method="GET" action="{{route('comment.destroy', $comment->id)}}" onsubmit="return confirm('هل أنت متأكد أنك تريد حذف التعليق هذا؟')">
@@ -133,23 +135,25 @@
                                                         @endif
                                                     @endif
                                                 @endif
-                                                <p class="mt-3 mb-2"><strong>{{$comment->user->name}}</strong></p>
-                                                <i class="far fa-clock"></i> <span class="comment_date text-secondary">{{$comment->created_at->diffForHumans()}}</span>
-                                                <p class="mt-3" >{{$comment->body}}</p>
+                                                    <p class="mt-3 mb-2"><strong>{{ $comment->user->name }}</strong></p>
+                                                    <i class="far fa-clock"></i> <span
+                                                        class="comment_date text-secondary">{{ $comment->created_at->diffForHumans() }}</span>
+                                                    <p class="mt-3">{{ $comment->body }}</p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            @endforeach
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div> --}}
 
             </div>
         </div>
     </div>
 @endSection
+
 
 @section('script')
     <script>
@@ -196,192 +200,190 @@
     </script>
 
     <script>
-    $('.like').on('click', function(event) {
-        var token = '{{ Session::token() }}';
-        var urlLike = '{{ route('like') }}';
+        $('.like').on('click', function(event) {
+            var token = '{{ Session::token() }}';
+            var urlLike = '{{ route('like') }}';
 
-        var videoId = 0;
+            var videoId = 0;
 
-        var AuthUser = "{{{ (Auth::user()) ? 0 : 1 }}}";
-        var blocked = "{{{ (Auth::user()) ? (Auth::user()->block) ? 1 : 0 : 2}}}";
+            var AuthUser = "{{ Auth::user() ? 0 : 1 }}";
+            var blocked = "{{ Auth::user() ? (Auth::user()->block ? 1 : 0) : 2 }}";
+            if (AuthUser == '1') {
+                event.preventDefault();
+                var html = '<div class="alert alert-danger">\
+                                                                                <ul>\
+                                                                                    <li class="loginAlert">يجب تسجيل الدخول لكي تستطيع الإعجاب بالفيديو</li>\
+                                                                                </ul>\
+                                                                            </div>';
+                $(".loginAlert").html(html);
+            }
+            // else if (blocked == '1') {
+            //     event.preventDefault();
+            //     var html='<div class="alert alert-danger">\
+            //                 <ul>\
+            //                     <li class="loginAlert">أنت ممنوع من الإعجاب</li>\
+            //                 </ul>\
+            //             </div>';
+            //     $(".loginAlert").html(html);
 
-        if (AuthUser == '1') {
-            event.preventDefault();
-            var html='<div class="alert alert-danger">\
-                        <ul>\
-                            <li class="loginAlert">يجب تسجيل الدخول لكي تستطيع الإعجاب بالفيديو</li>\
-                        </ul>\
-                    </div>';
-            $(".loginAlert").html(html);
-        }
-        // else if (blocked == '1') {
-        //     event.preventDefault();
-        //     var html='<div class="alert alert-danger">\
-        //                 <ul>\
-        //                     <li class="loginAlert">أنت ممنوع من الإعجاب</li>\
-        //                 </ul>\
-        //             </div>';
-        //     $(".loginAlert").html(html);
+            // }
+            else {
+                event.preventDefault();
+                videoId = $("#videoId").val();
+                var isLike = event.target.parentNode.previousElementSibling == null;
+                $.ajax({
+                    method: 'POST',
+                    url: urlLike,
+                    data: {
+                        isLike: isLike,
+                        videoId: videoId,
+                        _token: token
+                    },
+                    success: function(data) {
+                        if ($(event.target).hasClass('fa-thumbs-up')) {
+                            if ($(event.target).hasClass('liked')) {
+                                $(event.target).removeClass("liked");
+                            } else {
+                                $(event.target).addClass("liked");
+                            }
 
-        // }
-        else {
-            event.preventDefault();
-            videoId = $("#videoId").val();
-            var isLike = event.target.parentNode.previousElementSibling == null;
-            $.ajax({
-                method: 'POST',
-                url: urlLike,
-                data: {
-                    isLike: isLike,
-                    videoId: videoId,
-                    _token: token
-                },
-                success : function(data) {
-                    if ($(event.target).hasClass('fa-thumbs-up')) {
-                        if($(event.target).hasClass('liked')) {
-                            $(event.target).removeClass("liked");
+                            $('#likeNumber').html(data.countLike);
+                            $('#dislikeNumber').html(data.countDislike);
                         }
-                        else {
-                            $(event.target).addClass("liked");
+
+                        if ($(event.target).hasClass('fa-thumbs-down')) {
+                            if ($(event.target).hasClass('liked')) {
+                                $(event.target).removeClass("liked");
+                            } else {
+                                $(event.target).addClass("liked");
+                            }
+                            $('#likeNumber').html(data.countLike);
+                            $('#dislikeNumber').html(data.countDislike);
+                        }
+                        if (isLike) {
+                            $(".fa-thumbs-down").removeClass("liked");
+                        } else {
+                            $(".fa-thumbs-up").removeClass("liked");
                         }
 
-                        $('#likeNumber').html(data.countLike);
-                        $('#dislikeNumber').html(data.countDislike);
                     }
-
-                    if ($(event.target).hasClass('fa-thumbs-down')) {
-                        if($(event.target).hasClass('liked')) {
-                            $(event.target).removeClass("liked");
-                        }
-                        else {
-                            $(event.target).addClass("liked");
-                        }
-                        $('#likeNumber').html(data.countLike);
-                        $('#dislikeNumber').html(data.countDislike);
-                    }
-                    if (isLike) {
-                        $(".fa-thumbs-down").removeClass("liked");
-                    } else {
-                        $(".fa-thumbs-up").removeClass("liked");
-                    }
-
-                }
-            })
-        }
-    });
-</script>
+                })
+            }
+        });
+    </script>
 
     <script>
-	$('#videoPlayer').on('ended', function(e) {
-		var token = '{{ Session::token() }}';
-        var urlComment = '{{ route('view') }}';
-        event.preventDefault();
-        videoId = $("#videoId").val();
-
-        $.ajax({
-                method: 'POST',
-                url: urlComment,
-                data: {
-                    videoId: videoId,
-                    _token: token
-                },
-                success : function(data) {
-                    $(".viewsNumber").html(data.viewsNumbers);
-                }
-        })
-	});
-</script>
-
-    {{-- <script>
-    $('.saveComment').on('click', function(event) {
-        var token = '{{ Session::token() }}';
-        var urlComment = '{{ route('comment') }}';
-
-        var videoId = 0;
-
-        var AuthUser = "{{{ (Auth::user()) ? 0 : 1 }}}";
-        var blocked = "{{{ (Auth::user()) ? (Auth::user()->block) ? 1 : 0 : 2}}}";
-
-        if (AuthUser == '1') {
-            event.preventDefault();
-            var html='<div class="alert alert-danger">\
-                    <ul>\
-                        <li>يجب تسجيل الدخول لكي تستطيع التعليق على الفيديو</li>\
-                    </ul>\
-                </div>';
-            $(".commentAlert ").html(html);
-        }
-        else if (blocked == '1') {
-            var html='<div class="alert alert-danger">\
-                        <ul>\
-                            <li class="commentAlert">أنت ممنوع من التعليق</li>\
-                        </ul>\
-                    </div>';
-            $(".commentAlert ").html(html);
-
-        }
-        else if ($('#comment').val().length == 0) {
-            var html='<div class="alert alert-danger">\
-                    <ul>\
-                        <li>الرجاء كتابة تعليق</li>\
-                    </ul>\
-                </div>';
-            $(".commentAlert ").html(html);
-        }
-        else {
-            $(".commentAlert ").html('');
+        $('#videoPlayer').on('ended', function(e) {
+              var token = '{{ Session::token() }}';
+            var urlComment = '{{ route('view') }}';
             event.preventDefault();
             videoId = $("#videoId").val();
-            comment = $("#comment").val();
 
             $.ajax({
                 method: 'POST',
                 url: urlComment,
                 data: {
-                    comment: comment,
                     videoId: videoId,
                     _token: token
                 },
-                success : function(data) {
-                    $("#comment").val('');
+                success: function(data) {
+                    $(".viewsNumber").html(data.viewsNumbers);
+                }
+            })
+        });
+    </script>
 
-                    destroyUrl = "{{route('comment.destroy', 'des_id')}}";
+    <script>
+        $('.saveComment').on('click', function(event) {
+            var token = '{{ Session::token() }}';
+            var urlComment = '{{ route('comment') }}';
+
+            var videoId = 0;
+
+            var AuthUser ="{{{ (Auth::user()) ? 0 : 1 }}}";
+        var blocked = "{{{ (Auth::user()) ? (Auth::user()->block) ? 1 : 0 : 2}}}";
+            if (AuthUser == '1') {
+                event.preventDefault();
+                var html = '<div class="alert alert-danger">\
+                                                    <ul>\
+                                                        <li>يجب تسجيل الدخول لكي تستطيع التعليق على الفيديو</li>\
+                                                    </ul>\
+                                                </div>';
+                $(".commentAlert ").html(html);
+            }
+            // else if (blocked == '1') {
+            //     var html='<div class="alert alert-danger">\
+            //                 <ul>\
+            //                     <li class="commentAlert">أنت ممنوع من التعليق</li>\
+            //                 </ul>\
+            //             </div>';
+            //     $(".commentAlert ").html(html);
+
+            // }
+            else if ($('#comment').val().length == 0) {
+                var html = '<div class="alert alert-danger">\
+                                                    <ul>\
+                                                        <li>الرجاء كتابة تعليق</li>\
+                                                    </ul>\
+                                                </div>';
+                $(".commentAlert ").html(html);
+            } else {
+                $(".commentAlert ").html('');
+                event.preventDefault();
+                videoId = $("#videoId").val();
+                comment = $("#comment").val();
+
+                $.ajax({
+                    method: 'POST',
+                    url: urlComment,
+                    data: {
+                        comment: comment,
+                        videoId: videoId,
+                        _token: token
+                    },
+                    success: function(data) {
+                        $("#comment").val('');
+
+                        destroyUrl = "{{route('comment.destroy', 'des_id')}}";
                     destroy = destroyUrl.replace('des_id', data.commentId);
 
                     editUrl = "{{route('comment.edit', 'id')}}";
                     url = editUrl.replace('id', data.commentId);
 
-                    var html='  <div class="card mt-5 mb-3">\
-                                    <div class="card-body">\
-                                        <div class="row">\
-                                            <div class="col-2">\
-                                                <img src="'+data.userImage+'" width="150px" class="rounded-full"/>\
-                                            </div>\
-                                            <div class="col-10">\
-                                                <form method="GET" action="'+destroy+'">\
-                                                    @csrf\
-                                                    @method('DELETE')\
-                                                    <button type="submit" class="float-left"><i class="far fa-trash-alt text-danger fa-lg"></i></button>\
-                                                </form>\
-                                                <form method="GET" action="'+url+'">\
-                                                    @csrf\
-                                                    @method('PATCH')\
-                                                    <button type="submit" class="float-left"><i class="far fa-edit text-success fa-lg ml-3"></i></button>\
-                                                </form>\
-                                                <p class="mt-3 mb-2"><strong>'+data.userName+'</strong></p>\
-                                                <i class="far fa-clock"></i> <span class="comment_date text-secondary">'+data.commentDate+'</span>\
-                                                <p class="mt-3" >'+comment+'</p>\
-                                            </div>\
-                                        </div>\
-                                    </div>\
-                                </div>';
+                        var html = '  <div class="card mt-5 mb-3">\
+                                                                    <div class="card-body">\
+                                                                        <div class="row">\
+                                                                            <div class="col-2">\
+                                                                                <img src="' + data.userImage + '" width="150px" class="rounded-full"/>\
+                                                                            </div>\
+                                                                            <div class="col-10">\
+                                                                                <form method="GET" action="' + destroy + '">\
+                                                                                    @csrf\
+                                                                                    @method('DELETE')\
+                                                                                    <button type="submit" class="float-left"><i class="far fa-trash-alt text-danger fa-lg"></i></button>\
+                                                                                </form>\
+                                                                                <form method="GET" action="' + url + '">\
+                                                                                    @csrf\
+                                                                                    @method('PATCH')\
+                                                                                    <button type="submit" class="float-left"><i class="far fa-edit text-success fa-lg ml-3"></i></button>\
+                                                                                </form>\
+                                                                                <p class="mt-3 mb-2"><strong>' + data
+                            .userName +
+                            '</strong></p>\
+                                                                                <i class="far fa-clock"></i> <span class="comment_date text-secondary">' +
+                            data.commentDate + '</span>\
+                                                                                <p class="mt-3" >' + comment + '</p>\
+                                                                            </div>\
+                                                                        </div>\
+                                                                    </div>\
+                                                                </div>';
 
-                    $(".commentBody").prepend(html);
+                        $(".commentBody").prepend(html);
 
 
-                }
-            })
-        }
-    });
-</script> --}}
+                    }
+                })
+            }
+        });
+    </script>
 @endSection

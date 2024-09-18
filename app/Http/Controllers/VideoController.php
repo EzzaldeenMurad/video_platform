@@ -91,10 +91,16 @@ class VideoController extends Controller
         $user = Auth::user();
         if ($user) {
             $userLike = $user->likes()->where('video_id', $video->id)->first();
+
+            // Add or update video to history
+            $user->videoInHistory()->syncWithPivotValues([$video->id], ['created_at' => now()]);
         } else {
             $userLike = 0;
         }
-        return view('videos.show', compact('video', 'countLike', 'countDislike', 'userLike'));
+
+        $comments =  $video->comments()->with('user')->get()->reverse();
+
+        return view('videos.show', compact('video', 'countLike', 'countDislike', 'userLike', 'comments'));
     }
 
     /**

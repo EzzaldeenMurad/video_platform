@@ -31,7 +31,7 @@
 <body dir="rtl" style="text-align: right">
     <div>
         <nav class="navbar navbar-expand-lg navbar-light bg-light bg-white">
-            <a class="navbar-brand" href="#">فيديو حسوب</a>
+            <a class="navbar-brand" href="#">يوتيوبر</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -48,7 +48,7 @@
 
                     @auth
                         <li class="nav-item {{ request()->is('history') ? 'active' : '' }}">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="{{ route('history') }}">
                                 <i class="fas fa-history"></i>
                                 سجل المشاهدة
                             </a>
