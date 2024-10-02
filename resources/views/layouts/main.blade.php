@@ -40,7 +40,7 @@
             <div class=" navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item  {{ request()->is('/') ? 'active' : '' }}">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{{route('main')}}">
                             <i class="fas fa-home"></i>
                             الصفحة الرئيسية
                         </a>
@@ -70,7 +70,7 @@
                     @endauth
 
                     <li class="nav-item {{ request()->is('channel*') ? 'active' : '' }}">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="{{ route('channel.index') }}">
                             <i class="fas fa-film"></i>
                             القنوات
                         </a>

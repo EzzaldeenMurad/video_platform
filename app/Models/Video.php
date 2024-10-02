@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,20 +20,27 @@ class Video extends Model
         return $this->hasMany(Convertedvideo::class);
     }
 
-    public function likes() {
+    public function likes()
+    {
         return $this->hasMany(Like::class);
     }
 
-    public function comments() {
+    public function comments()
+    {
         return $this->hasMany(Comment::class);
     }
 
-    public function views() {
+    public function views()
+    {
         return $this->hasMany(View::class);
     }
 
     public function users()
     {
         return $this->belongsToMany(Video::class, 'video_user', 'video_id', 'user_id')->withTimestamps()->withPivot('id');
+    }
+    public function getVideoViews(Carbon $date)
+    {
+        return $this->where('created_at', '>=', $date)->get()->$this->views()->orderBy('views.views_number', 'Desc');
     }
 }
