@@ -217,16 +217,16 @@
                                                                             </div>';
                 $(".loginAlert").html(html);
             }
-            // else if (blocked == '1') {
-            //     event.preventDefault();
-            //     var html='<div class="alert alert-danger">\
-            //                 <ul>\
-            //                     <li class="loginAlert">أنت ممنوع من الإعجاب</li>\
-            //                 </ul>\
-            //             </div>';
-            //     $(".loginAlert").html(html);
+            else if (blocked == '1') {
+                event.preventDefault();
+                var html='<div class="alert alert-danger">\
+                            <ul>\
+                                <li class="loginAlert">أنت ممنوع من الإعجاب</li>\
+                            </ul>\
+                        </div>';
+                $(".loginAlert").html(html);
 
-            // }
+            }
             else {
                 event.preventDefault();
                 videoId = $("#videoId").val();
@@ -311,15 +311,15 @@
                                                 </div>';
                 $(".commentAlert ").html(html);
             }
-            // else if (blocked == '1') {
-            //     var html='<div class="alert alert-danger">\
-            //                 <ul>\
-            //                     <li class="commentAlert">أنت ممنوع من التعليق</li>\
-            //                 </ul>\
-            //             </div>';
-            //     $(".commentAlert ").html(html);
+            else if (blocked == '1') {
+                var html='<div class="alert alert-danger">\
+                            <ul>\
+                                <li class="commentAlert">أنت ممنوع من التعليق</li>\
+                            </ul>\
+                        </div>';
+                $(".commentAlert ").html(html);
 
-            // }
+            }
             else if ($('#comment').val().length == 0) {
                 var html = '<div class="alert alert-danger">\
                                                     <ul>\

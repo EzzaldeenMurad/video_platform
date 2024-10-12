@@ -8,11 +8,11 @@
                 رفع فيديو جديد
             </div>
 
-            {{-- @if (auth()->user()->block)
+            @if (auth()->user()->block)
                 <div class="alert alert-danger" role="alert">
                     للأسف لا تستطيع رفع مقاطع فيديو، يرجى التواصل مع الإدارة لمعرفة السبب
                 </div>
-            @else --}}
+            @else
                 <div class="card-body">
                     <form action="{{ route('videos.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
@@ -66,7 +66,7 @@
 
                     </form>
                 </div>
-            {{-- @endif --}}
+            @endif
         </div>
     </div>
 </div>

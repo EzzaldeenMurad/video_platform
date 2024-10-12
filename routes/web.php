@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminsController;
 use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\HistoryController;
@@ -56,5 +57,18 @@ Route::controller(HistoryController::class)->group(function () {
 });
 
 
-Route::get('/channel', [ChannelController::class,'index'])->name('channel.index');
-Route::get('/channel/search',  [ChannelController::class,'search'])->name('channel.search');
+Route::get('/channel', [ChannelController::class, 'index'])->name('channel.index');
+Route::get('/channel/search',  [ChannelController::class, 'search'])->name('channel.search');
+
+
+Route::prefix('/admin')->middleware('can:update-videos')->group(function () {
+    Route::get('/', [AdminsController::class, 'index'])->name('admin.index');
+    Route::get('/channels', [ChannelController::class, 'adminIndex'])->name('channels.index');
+    Route::patch('/{user}/channels', [ChannelController::class, 'adminUpdate'])->name('channels.update')->middleware('can:update-users');
+    Route::delete('/channels/{user}', [ChannelController::class, 'adminDestroy'])->name('channels.delete')->middleware('can:update-users');
+    Route::patch('/{user}/block', [ChannelController::class, 'adminBlock'])->name('channels.block')->middleware('can:update-users');
+    Route::get('/channels/blocked', [ChannelController::class, 'blockedChannels'])->name('channels.blocked');
+    Route::patch('/{user}/open', [ChannelController::class, 'openBlock'])->name('channels.open.block')->middleware('can:update-users');
+    Route::get('/allChannels', [ChannelController::class, 'allChannels'])->name('channels.all');
+    Route::get('/MostViewedVideos', [VideoController::class, 'mostViewedVideos'])->name('most.viewed.video');
+});
