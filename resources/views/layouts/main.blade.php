@@ -10,21 +10,13 @@
     <!-- bootstarp -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
         integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
-        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
-        integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous">
-    </script>
 
-    <!-- fontawesome -->
-    <script src="https://kit.fontawesome.com/597cb1f685.js" crossorigin="anonymous"></script>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    {{-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
+
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 
-    {{-- <link href="{!! asset('theme/css/sb-admin-2.css') !!}" rel="stylesheet"> --}}
+    <link href="{!! asset('theme/css/sb-admin-2.css') !!}" rel="stylesheet">
 
 </head>
 
@@ -40,7 +32,7 @@
             <div class=" navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item  {{ request()->is('/') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{route('main')}}">
+                        <a class="nav-link" href="{{ route('main') }}">
                             <i class="fas fa-home"></i>
                             الصفحة الرئيسية
                         </a>
@@ -77,12 +69,12 @@
                     </li>
                 </ul>
 
-                <ul class="navbar-nav mr-auto">
-                    {{-- <div class="topbar" style="z-index:1">
+                <ul class="navbar-nav mr-auto align-items-center">
+                    <div class="topbar" style="z-index:1">
                         @auth
                             <!-- Nav Item - Alerts -->
                             <li class="nav-item dropdown no-arrow alert-dropdown mx-1">
-                                <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                <a class="nav-link dropdown-toggle " href="#" id="alertsDropdown" role="button"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fas fa-bell fa-fw fa-lg"></i>
                                     <!-- Counter - Alerts -->
@@ -95,12 +87,12 @@
                                     <div class="alert-body">
 
                                     </div>
-                                    <a class="dropdown-item text-center small text-gray-500"
-                                        href="{{ route('all.Notification') }}">عرض جميع الإشعارات</a>
+                                    <a class="dropdown-item text-center small text-gray-500" href="{{route('all.Notification')}}">عرض جميع
+                                        الإشعارات</a>
                                 </div>
                             </li>
                         @endauth
-                    </div> --}}
+                    </div>
                     @guest
                         <li class="nav-item mt-2">
                             <a class="nav-link" href="{{ route('login') }}">{{ __('تسجيل الدخول') }}</a>
@@ -111,7 +103,7 @@
                             </li>
                         @endif
                     @else
-                        <li class="nav-item dropdown justify-content-left mt-2">
+                        <li class="nav-item dropdown justify-content-left ">
                             <a id="navbarDropdown" class="nav-link" href="#" data-toggle="dropdown">
                                 <img class="h-8 w-8 rounded-full" src="{{ Auth::user()->profile_photo_url }}"
                                     alt="{{ Auth::user()->name }}" />
@@ -214,19 +206,31 @@
             @yield('content')
         </main>
     </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
+        integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous">
+    </script>
+    <!-- fontawesome -->
+    <script src="https://kit.fontawesome.com/597cb1f685.js" crossorigin="anonymous"></script>
+
+    {{-- <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script> --}}
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
-    {{-- <script>
+    <script>
         // Enable pusher logging - don't include this in production
         Pusher.logToConsole = true;
 
-        var pusher = new Pusher('0d7c055c9f991cc11d83', {
+        var pusher = new Pusher('fc7895c1c3d206d9d6a2', {
             cluster: 'mt1'
         });
-    </script> --}}
-    {{-- <script src="{{ asset('js/pushNotifications.js') }}"></script>
-    <script src="{{ asset('js/failedNotifications.js') }}"></script> --}}
+    </script>
+    <script src="{{ asset('js/pushNotifications.js') }}"></script>
+    <script src="{{ asset('js/failedNotifications.js') }}"></script>
 
-    {{-- <script>
+    <script>
         var token = '{{ Session::token() }}';
         var urlNotify = '{{ route('notification') }}';
 
@@ -258,33 +262,36 @@
 
                         if (item.success) {
                             resposeNotifications += '<a class="dropdown-item d-flex align-items-center" href="#">\
-                                                            <div class="ml-3">\
-                                                                <div class="icon-circle bg-secondary">\
-                                                                    <i class="far fa-bell text-white"></i>\
-                                                                </div>\
-                                                            </div>\
-                                                            <div>\
-                                                                <div class="small text-gray-500">' + date + ' الساعة ' +
+                                                                        <div class="ml-3">\
+                                                                            <div class="icon-circle bg-secondary">\
+                                                                                <i class="far fa-bell text-white"></i>\
+                                                                            </div>\
+                                                                        </div>\
+                                                                        <div>\
+                                                                            <div class="small text-gray-500">' + date +
+                                ' الساعة ' +
                                 time + '</div>\
-                                                                <span>تهانينا لقد تم معالجة مقطع الفيديو <b>' + item
+                                                                            <span>تهانينا لقد تم معالجة مقطع الفيديو <b>' +
+                                item
                                 .notification + '</b> بنجاح</span>\
-                                                            </div>\
-                                                        </a>';
+                                                                        </div>\
+                                                                    </a>';
                         } else {
                             resposeNotifications += '<a class="dropdown-item d-flex align-items-center" href="#">\
-                                                            <div class="ml-3">\
-                                                                <div class="icon-circle bg-secondary">\
-                                                                    <i class="far fa-bell text-white"></i>\
-                                                                </div>\
-                                                            </div>\
-                                                            <div>\
-                                                                <div class="small text-gray-500">' + date + ' الساعة ' +
+                                                                        <div class="ml-3">\
+                                                                            <div class="icon-circle bg-secondary">\
+                                                                                <i class="far fa-bell text-white"></i>\
+                                                                            </div>\
+                                                                        </div>\
+                                                                        <div>\
+                                                                            <div class="small text-gray-500">' + date +
+                                ' الساعة ' +
                                 time +
                                 '</div>\
-                                                                <span>للأسف حدث خطأ غير متوقع أثناء معالجة مقطع الفيديو <b>' +
+                                                                            <span>للأسف حدث خطأ غير متوقع أثناء معالجة مقطع الفيديو <b>' +
                                 item.notification + '</b> يرجى رفعه مرة أخرى</span>\
-                                                            </div>\
-                                                        </a>';
+                                                                        </div>\
+                                                                    </a>';
                         }
 
                         $('.alert-body').html(resposeNotifications);
@@ -292,7 +299,7 @@
                 }
             });
         });
-    </script> --}}
+    </script>
     @yield('script')
 </body>
 
